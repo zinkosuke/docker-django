@@ -1,0 +1,32 @@
+version: "3.7"
+x-refs:
+services:
+  django:
+    image: django-local:latest
+    build:
+      context: ./django
+    environment:
+      DJANGO_SETTINGS_MODULE: settings.env.dev
+      AWS_PROFILE: ${AWS_PROFILE}
+    volumes:
+      - ${HOME}/.aws:/home/airflow/.aws
+      - ./django:/opt/django
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:11.6-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: airflow_db
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql
+networks:
+  default:
+    name: docker-django-net
+volumes:
+  pg-data:

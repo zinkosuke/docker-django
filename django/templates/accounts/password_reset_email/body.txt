@@ -1,0 +1,4 @@
+password_reset_email
+{{ user }}
+{{ uid }}
+{{ token }}
