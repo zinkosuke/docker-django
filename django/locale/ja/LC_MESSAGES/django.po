@@ -1,0 +1,89 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-08 18:08+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: accounts/models.py:19
+msgid "username"
+msgstr ""
+
+#: accounts/models.py:23
+msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr ""
+
+#: accounts/models.py:27
+msgid "A user with that username already exists."
+msgstr ""
+
+#: accounts/models.py:30
+msgid "first name"
+msgstr ""
+
+#: accounts/models.py:31
+msgid "last name"
+msgstr ""
+
+#: accounts/models.py:32
+msgid "email address"
+msgstr ""
+
+#: accounts/models.py:34
+msgid "staff status"
+msgstr ""
+
+#: accounts/models.py:37
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: accounts/models.py:41
+msgid "active"
+msgstr ""
+
+#: accounts/models.py:44
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: accounts/models.py:48
+msgid "date joined"
+msgstr ""
+
+#: accounts/serializers.py:57
+#, python-format
+msgid ""
+"Please enter a correct %(username)s and password. Note that both fields may "
+"be case-sensitive."
+msgstr ""
+
+#: accounts/serializers.py:64 accounts/serializers.py:83
+#: accounts/serializers.py:130
+msgid "This account is inactive."
+msgstr ""
+
+#: accounts/serializers.py:87
+msgid "The two password fields didn’t match."
+msgstr ""
+
+#: accounts/serializers.py:104
+msgid "Your old password was entered incorrectly. Please enter it again."
+msgstr ""
+
+#: settings/common.py:25
+msgid "Japanese"
+msgstr ""

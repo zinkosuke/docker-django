@@ -11,9 +11,21 @@ router.register(r"users", views.UserReadOnlyViewSet)
 # User Register, EmailVerification
 # User Edit, EmailChange
 urlpatterns = [
-    path("login/", views.LoginView.as_view()),
-    path("logout/", views.LogoutView.as_view()),
-    path("password/change/", views.PasswordChangeView.as_view()),
-    path("password/reset_email/", views.PasswordResetEmailView.as_view()),
-    path("password/reset/", views.PasswordResetView.as_view()),
+    path("login/", views.LoginView.as_view(), name="login"),
+    path("logout/", views.LogoutView.as_view(), name="logout"),
+    path(
+        "password/change/",
+        views.PasswordChangeView.as_view(),
+        name="password_change",
+    ),
+    path(
+        "password/reset_email/",
+        views.PasswordResetEmailView.as_view(),
+        name="password_reset_email",
+    ),
+    path(
+        "password/reset/",
+        views.PasswordResetView.as_view(),
+        name="password_reset",
+    ),
 ] + router.urls

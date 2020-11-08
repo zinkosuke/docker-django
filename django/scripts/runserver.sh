@@ -12,7 +12,7 @@ EOS
 
 setup() {
     ./manage.py migrate
-    # ./manage.py compilemessages
+    ./manage.py compilemessages
 }
 
 run_unit() {

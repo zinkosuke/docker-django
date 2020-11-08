@@ -17,6 +17,7 @@ RUN set -x \
  && apt-get install -y --no-install-recommends \
         build-essential \
         gcc \
+        gettext \
  && pip install -U pip setuptools poetry \
  && poetry config virtualenvs.create false \
  && poetry install --no-root \

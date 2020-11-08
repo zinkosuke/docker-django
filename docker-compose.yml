@@ -8,6 +8,8 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: settings.env.dev
       AWS_PROFILE: ${AWS_PROFILE}
+    ports:
+      - "8000:8000"
     volumes:
       - ${HOME}/.aws:/home/django/.aws
       - ./django:/opt/django
