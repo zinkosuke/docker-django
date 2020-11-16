@@ -8,10 +8,9 @@ BASE_DIR = os.environ["DJANGO_HOME"]
 WSGI_PPLICATION = "settings.wsgi.application"
 ROOT_URLCONF = "settings.urls"
 
-"""Django auth.
+"""Auth.
 """
 AUTH_USER_MODEL = "accounts.User"
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 """Static files.
 """
