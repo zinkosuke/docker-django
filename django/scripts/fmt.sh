@@ -1,7 +1,5 @@
 #!/bin/sh
-set -x
 path=${1:-.}
-
+set -x
 isort -rc ${path}
-
 black ${path}
