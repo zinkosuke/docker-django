@@ -7,6 +7,6 @@ black --check ${path}
 CODE=$((${CODE:-0} + ${?}))
 flake8 ${path}
 CODE=$((${CODE:-0} + ${?}))
-mypy ${path}
+mypy ${1}
 CODE=$((${CODE:-0} + ${?}))
 exit ${CODE}
