@@ -8,30 +8,18 @@ BASE_DIR = os.environ["DJANGO_HOME"]
 WSGI_PPLICATION = "settings.wsgi.application"
 ROOT_URLCONF = "settings.urls"
 
-"""Auth.
-"""
-AUTH_USER_MODEL = "accounts.User"
-
-"""Static files.
-"""
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-"""Locale.
-"""
-LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
-LANGUAGE_CODE = "ja"
-LANGUAGES = [("ja", _("Japanese"))]
-USE_I18N = True
-USE_L10N = False
-
-"""Timezone.
+"""CORE.
 """
 TIME_ZONE = "Asia/Tokyo"
 USE_TZ = True
 
-"""Installed apps.
-"""
+LANGUAGE_CODE = "ja"
+LANGUAGES = [("ja", _("Japanese"))]
+USE_I18N = True
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
+
+USE_L10N = False
+
 INSTALLED_APPS = [
     "accounts.apps.Config",
     "corsheaders",
@@ -47,37 +35,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-"""Middlewares.
-"""
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
-"""Password validation rules.
-"""
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
-    },
-]
-
-"""Templates.
-"""
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -94,25 +51,43 @@ TEMPLATES = [
     },
 ]
 
-"""REST framework settings.
-"""
-REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
-    "DEFAULT_PAGINATION_CLASS": "accounts.pagination.Pagination",
-    # "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
-    # "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
-    "PAGE_SIZE": 25,
-    "TEST_REQUEST_DEFAULT_FORMAT": "json",
-}
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/static/"
 
-"""CORS.
+"""MIDDLEWARE.
 """
-CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
 
-"""Logging.
+"""AUTHENTICATION.
+"""
+AUTH_USER_MODEL = "accounts.User"
+
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
+    },
+]
+
+"""LOGGING.
 """
 LOGGING = {
     "version": 1,
@@ -143,4 +118,23 @@ LOGGING = {
         #     "propagate": False,
         # },
     },
+}
+
+"""CORS.
+"""
+CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
+
+"""REST_FRAMEWORK.
+"""
+REST_FRAMEWORK = {
+    # "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    # "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
+    # "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    # "DEFAULT_VERSIONING_CLASS": None,
+    "DEFAULT_PAGINATION_CLASS": "accounts.pagination.Pagination",
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
+    "PAGE_SIZE": 25,
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }

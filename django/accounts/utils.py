@@ -20,7 +20,7 @@ def secure_dump(value: str) -> str:
 
 
 def secure_loads(value: str) -> str:
-    return signing.loads(value, max_age=settings.SECRET_TIMEOUT_SECONDS)
+    return signing.loads(value, max_age=settings.PASSWORD_RESET_TIMEOUT)
 
 
 def make_user_token(user) -> str:
