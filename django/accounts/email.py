@@ -3,7 +3,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 
-from . import utils
 from .apps import app_name
 
 
@@ -42,8 +41,8 @@ def password_reset_email(request, user):
     ctx.update(
         {
             "user": user,
-            "uid": utils.urlencode_pk(user.pk),
-            "token": utils.make_user_token(user),
+            "uid": user.url_encode(),
+            "token": user.tokenize(),
         }
     )
     send_mail(

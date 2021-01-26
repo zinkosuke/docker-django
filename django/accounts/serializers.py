@@ -3,16 +3,14 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from . import utils
-
-User = auth.get_user_model()
+from . import models
 
 
 class UserSerializer(serializers.ModelSerializer):
     method_field = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = User
+        model = models.User
         exclude = [
             "password",
             "is_superuser",
@@ -50,7 +48,7 @@ class LoginSerializer(serializers.Serializer):
             )
             if self.user_cache is None:
                 username_field = str(
-                    User._meta.get_field(User.USERNAME_FIELD).verbose_name
+                    models.User._meta.get_field(models.User.USERNAME_FIELD).verbose_name
                 )
                 raise ValidationError(
                     _(
@@ -120,11 +118,8 @@ class PasswordResetSerializer(BaseNewPasswordSerializer):
 
     def validate(self, attrs):
         try:
-            uid = utils.urldecode_pk(attrs.get("uid"))
-            self.user_cache = User._default_manager.get(pk=uid)
-            if not utils.compare_user_token(
-                self.user_cache, attrs.get("token")
-            ):
+            self.user_cache = models.User.url_decode(attrs.get("uid"))
+            if not self.user_cache.compare_token(attrs.get("token")):
                 raise Exception()
         except Exception:
             raise ValidationError(_("This account is inactive."))

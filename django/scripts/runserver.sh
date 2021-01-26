@@ -17,12 +17,12 @@ setup() {
 
 run_unit() {
     setup
-    ./manage.py runserver 0:8000
+    PYTHONUNBUFFERED=1 ./manage.py runserver 0:8000
 }
 
 run_dev() {
     setup
-    gunicorn \
+    PYTHONUNBUFFERED=1 gunicorn \
         --bind 0:8000 \
         --workers 1 \
         --threads 1 \

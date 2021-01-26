@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django_filters import rest_framework as filters
 
-User = get_user_model()
+from . import models
 
 
 class UserFilterSet(filters.FilterSet):
@@ -11,7 +11,7 @@ class UserFilterSet(filters.FilterSet):
     none = filters.CharFilter(field_name="username", method="filter_none")
 
     class Meta:
-        model = User
+        model = models.User
         fields = "__all__"
 
     def filter_none(self, queryset, name, value):

@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import _unicode_ci_compare
 from django.utils.decorators import method_decorator
@@ -11,14 +10,13 @@ from rest_framework.response import Response
 
 from . import email
 from . import filters
+from . import models
 from . import permissions
 from . import serializers
 
-User = get_user_model()
-
 
 class UserReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all().order_by("pk")
+    queryset = models.User.objects.all().order_by("pk")
     serializer_class = serializers.UserSerializer
     filterset_class = filters.UserFilterSet
 
@@ -67,8 +65,8 @@ class PasswordResetEmailView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAll]
 
     def get_users(self, email_value):
-        email_field_name = User.get_email_field_name()
-        active_users = User._default_manager.filter(
+        email_field_name = models.User.get_email_field_name()
+        active_users = models.User._default_manager.filter(
             **{"%s__iexact" % email_field_name: email_value, "is_active": True}
         )
 

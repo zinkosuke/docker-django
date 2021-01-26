@@ -1,10 +1,15 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import UserManager
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext_lazy as _
 
 
@@ -50,6 +55,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         swappable = "AUTH_USER_MODEL"
 
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: {self.username}>"
+
+    def __str__(self):
+        return self.__repr__()
+
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
@@ -64,8 +75,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-    def __repr__(self):
-        return f"<{self.__class__.__name__}: {self.username}>"
+    def url_encode(self):
+        return urlsafe_base64_encode(force_bytes(self.pk))
 
-    def __str__(self):
-        return self.__repr__()
+    @staticmethod
+    def url_decode(uid):
+        pk = int(force_text(urlsafe_base64_decode(uid)))
+        return User._default_manager.get(pk=pk)
+
+    def tokenize(self):
+        return default_token_generator.make_token(self)
+
+    def compare_token(self, token):
+        return default_token_generator.check_token(self, token)

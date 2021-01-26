@@ -129,8 +129,8 @@ CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
 REST_FRAMEWORK = {
     # "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     # "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
-    # "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
-    # "DEFAULT_VERSIONING_CLASS": None,
+    "DEFAULT_PERMISSION_CLASSES": ["accounts.permissions.AllowAll"],
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_PAGINATION_CLASS": "accounts.pagination.Pagination",
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend"
