@@ -115,14 +115,6 @@ python-versions = ">=3.5"
 Django = ">=2.2"
 
 [[package]]
-name = "django-extensions"
-version = "3.0.9"
-description = "Extensions for Django"
-category = "main"
-optional = false
-python-versions = ">=3.5"
-
-[[package]]
 name = "django-filter"
 version = "2.4.0"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
@@ -407,7 +399,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b0598dac64a68f0ce18a38b9cfcd900f857526a5ba563fb11a420936494afc52"
+content-hash = "9c52d4083bade8fa61aa973d8fb5e1fc95d1deab4f0338c14f47bb1af93613a0"
 
 [metadata.files]
 appdirs = [
@@ -481,10 +473,6 @@ django = [
 django-cors-headers = [
     {file = "django-cors-headers-3.5.0.tar.gz", hash = "sha256:db82b2840f667d47872ae3e4a4e0a0d72fbecb42779b8aa233fa8bb965f7836a"},
     {file = "django_cors_headers-3.5.0-py3-none-any.whl", hash = "sha256:9322255c296d5f75089571f29e520c83ff9693df17aa3cf9f6a4bea7c6740169"},
-]
-django-extensions = [
-    {file = "django-extensions-3.0.9.tar.gz", hash = "sha256:6809c89ca952f0e08d4e0766bc0101dfaf508d7649aced1180c091d737046ea7"},
-    {file = "django_extensions-3.0.9-py3-none-any.whl", hash = "sha256:dc663652ac9460fd06580a973576820430c6d428720e874ae46b041fa63e0efa"},
 ]
 django-filter = [
     {file = "django-filter-2.4.0.tar.gz", hash = "sha256:84e9d5bb93f237e451db814ed422a3a625751cbc9968b484ecc74964a8696b06"},
