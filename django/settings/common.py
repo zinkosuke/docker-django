@@ -23,16 +23,15 @@ USE_L10N = False
 INSTALLED_APPS = [
     "accounts.apps.Config",
     "corsheaders",
-    "django_extensions",
     "django_filters",
     "rest_framework",
     "rest_framework.authtoken",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.messages",
+    # "django.contrib.messages",
     "django.contrib.sessions",
-    "django.contrib.staticfiles",
+    # "django.contrib.staticfiles",
 ]
 
 TEMPLATES = [
@@ -64,7 +63,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
+    # "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
