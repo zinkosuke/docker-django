@@ -5,6 +5,7 @@ services:
     image: django-local:latest
     build:
       context: ./django
+    restart: always
     environment:
       DJANGO_SETTINGS_MODULE: settings.env.dev
       AWS_PROFILE: ${AWS_PROFILE}
@@ -15,6 +16,15 @@ services:
       - ./django:/opt/django
     depends_on:
       - postgres
+  swaggerui:
+    image: swaggerapi/swagger-ui:latest
+    restart: always
+    environment:
+      API_URL: docs/openapi-schema.yml
+    ports:
+      - 8080:8080
+    volumes:
+      - ./django/docs:/usr/share/nginx/html/docs
   postgres:
     image: postgres:11.6-alpine
     restart: always
