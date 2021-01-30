@@ -10,28 +10,14 @@ EOS
     exit 1
 }
 
-setup() {
+run_development() {
     ./manage.py migrate
     ./manage.py compilemessages
-}
-
-run_unit() {
-    setup
     PYTHONUNBUFFERED=1 ./manage.py runserver 0:8000
 }
 
-run_dev() {
-    setup
-    PYTHONUNBUFFERED=1 gunicorn \
-        --bind 0:8000 \
-        --workers 1 \
-        --threads 1 \
-        --capture-output \
-        --reload \
-        settings.wsgi:application
-}
-
 run_production() {
+    ./manage.py compilemessages
     gunicorn \
         --bind 0:8000 \
         --workers 1 \
@@ -42,11 +28,8 @@ run_production() {
 }
 
 case "${DJANGO_SETTINGS_MODULE}" in
-    settings.env.unit)
-        run_unit
-        ;;
-    settings.env.dev)
-        run_dev
+    settings.env.unit|settings.env.dev)
+        run_development
         ;;
     settings.env.stg|settings.env.prod)
         run_production

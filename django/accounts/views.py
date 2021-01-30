@@ -1,12 +1,11 @@
-from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import _unicode_ci_compare
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework import generics
 from rest_framework import views
 from rest_framework import viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
+
+from django.contrib.auth.forms import _unicode_ci_compare
 
 from . import email
 from . import filters
@@ -15,71 +14,66 @@ from . import permissions
 from . import serializers
 
 
-class UserReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all().order_by("pk")
-    serializer_class = serializers.UserSerializer
     filterset_class = filters.UserFilterSet
 
+    def get_serializer_class(self):
+        if self.action in {"update", "partial_update"}:
+            return serializers.UserUpdateSerializer
+        return serializers.UserReadOnlySerializer
 
-class LoginView(views.APIView):
+
+class LoginView(ObtainAuthToken):
     permission_classes = [permissions.AllowAll]
 
-    @method_decorator(sensitive_post_parameters())
-    @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
     def post(self, request, *args, **kwargs):
-        serializer = serializers.LoginSerializer(request, data=request.data)
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({})
+        user = serializer.validated_data["user"]
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response(
+            {
+                "token": token.key,
+                "user_id": user.pk,
+                "email": user.email,
+            }
+        )
 
 
 class LogoutView(views.APIView):
-    @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
     def post(self, request, *args, **kwargs):
-        auth_logout(request)
-        return Response({})
+        if request.user and request.user.is_authenticated:
+            Token.objects.filter(user=request.user).delete()
+        return Response({}, status=204)
 
 
 class PasswordChangeView(generics.GenericAPIView):
     serializer_class = serializers.PasswordChangeSerializer
 
-    @method_decorator(sensitive_post_parameters())
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, user=request.user)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({})
+        return Response({}, status=204)
 
 
-class PasswordResetEmailView(generics.GenericAPIView):
-    serializer_class = serializers.PasswordResetEmailSerializer
+class PasswordForgetView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAll]
+    serializer_class = serializers.EmailSerializer
 
     def get_users(self, email_value):
-        email_field_name = models.User.get_email_field_name()
-        active_users = models.User._default_manager.filter(
-            **{"%s__iexact" % email_field_name: email_value, "is_active": True}
-        )
-
-        def __unicode_ci_compare(u):
-            return _unicode_ci_compare(
-                email_value, getattr(u, email_field_name)
-            )
-
-        return (
-            u
-            for u in active_users
-            if u.has_usable_password() and __unicode_ci_compare(u)
-        )
+        users = []
+        for user in models.User.objects.filter(
+            email__iexact=email_value, is_active=True
+        ):
+            if user.has_usable_password() and _unicode_ci_compare(
+                email_value, user.email
+            ):
+                users.append(user)
+        return users
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -87,20 +81,15 @@ class PasswordResetEmailView(generics.GenericAPIView):
         email_value = serializer.save()
         for user in self.get_users(email_value):
             email.password_reset_email(request, user)
-        return Response({})
+        return Response({}, status=204)
 
 
 class PasswordResetView(generics.GenericAPIView):
-    serializer_class = serializers.PasswordResetSerializer
     permission_classes = [permissions.AllowAll]
-
-    @method_decorator(sensitive_post_parameters())
-    @method_decorator(never_cache)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    serializer_class = serializers.PasswordResetSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({})
+        return Response({}, status=204)

@@ -1,4 +1,4 @@
-FROM python:3.8.2-slim
+FROM python:3.8-slim
 
 ARG OWNER=django
 
@@ -15,15 +15,12 @@ RUN set -x \
  && useradd -u 1000 -g 1000 -m -s /bin/bash ${OWNER} \
  && apt-get update -yqq \
  && apt-get install -y --no-install-recommends \
-        build-essential \
-        gcc \
         gettext \
  && pip install -U pip setuptools poetry \
  && poetry config virtualenvs.create false \
  && poetry install --no-root \
  && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/* \
- && ./manage.py compilemessages
+ && rm -rf /var/lib/apt/lists/*
 
 USER ${OWNER}
 EXPOSE 8000

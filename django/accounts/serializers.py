@@ -1,74 +1,45 @@
-from django.contrib import auth
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
+from django.contrib import auth
+from django.utils.translation import gettext_lazy as _
 
 from . import models
 
 
-class UserSerializer(serializers.ModelSerializer):
-    method_field = serializers.SerializerMethodField(read_only=True)
-
+class UserReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
-        exclude = [
-            "password",
-            "is_superuser",
-            "groups",
-            "user_permissions",
-            "is_staff",
-        ]
-        read_only_fields = [
+        fields = (
             "id",
+            "username",
+            "first_name",
+            "last_name",
             "email",
             "is_active",
-            "last_login",
             "date_joined",
-        ]
-
-    def get_method_field(self, obj):
-        return obj.pk
+        )
+        read_only_fields = fields
 
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150, required=True)
-    password = serializers.CharField(max_length=128, required=True)
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+        )
 
-    def __init__(self, request, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.request = request
-        self.user_cache = None
 
-    def validate(self, attrs):
-        username = attrs.get("username")
-        password = attrs.get("password")
-        if username and password:
-            self.user_cache = auth.authenticate(
-                self.request, username=username, password=password
-            )
-            if self.user_cache is None:
-                username_field = str(
-                    models.User._meta.get_field(models.User.USERNAME_FIELD).verbose_name
-                )
-                raise ValidationError(
-                    _(
-                        "Please enter a correct %(username)s and password. Note that both "
-                        "fields may be case-sensitive.",
-                    ).replace("%(username)s", username_field),
-                    code="invalid_login",
-                )
-            elif not self.user_cache.is_active:
-                raise ValidationError(
-                    _("This account is inactive."), code="inactive",
-                )
-        return attrs
+class EmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
     def save(self):
-        auth.login(self.request, self.user_cache)
-        return self.user_cache
+        return self.validated_data["email"]
 
 
-class BaseNewPasswordSerializer(serializers.Serializer):
+class NewPasswordSerializer(serializers.Serializer):
     new_password1 = serializers.CharField(max_length=128, required=True)
     new_password2 = serializers.CharField(max_length=128, required=True)
 
@@ -92,7 +63,7 @@ class BaseNewPasswordSerializer(serializers.Serializer):
         return self.user_cache
 
 
-class PasswordChangeSerializer(BaseNewPasswordSerializer):
+class PasswordChangeSerializer(NewPasswordSerializer):
     old_password = serializers.CharField(max_length=128, required=True)
 
     def validate_old_password(self, value):
@@ -105,23 +76,15 @@ class PasswordChangeSerializer(BaseNewPasswordSerializer):
         return value
 
 
-class PasswordResetEmailSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-
-    def save(self):
-        return self.validated_data["email"]
-
-
-class PasswordResetSerializer(BaseNewPasswordSerializer):
+class PasswordResetSerializer(NewPasswordSerializer):
     uid = serializers.CharField(required=True)
     token = serializers.CharField(required=True)
 
     def validate(self, attrs):
-        try:
-            self.user_cache = models.User.url_decode(attrs.get("uid"))
-            if not self.user_cache.compare_token(attrs.get("token")):
-                raise Exception()
-        except Exception:
+        self.user_cache = models.User.url_decode(attrs.get("uid"))
+        if self.user_cache is None:
+            raise ValidationError(_("This account is inactive."))
+        if not self.user_cache.compare_token(attrs.get("token")):
             raise ValidationError(_("This account is inactive."))
         attrs = super().validate(attrs)
         return attrs

@@ -28,11 +28,12 @@ def send_mail(
 
 def get_sites_context(request=None):
     current_site = get_current_site(request)
+    is_secure = request and request.is_secure()
     return {
         "frontend_origin": settings.FRONTEND_ORIGIN,
         "domain": current_site.domain,
         "site_name": current_site.name,
-        "protocol": "https" if request and request.is_secure() else "http",
+        "protocol": "https" if is_secure else "http",
     }
 
 

@@ -29,9 +29,9 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    # "django.contrib.messages",
+    "django.contrib.messages",
     "django.contrib.sessions",
-    # "django.contrib.staticfiles",
+    "django.contrib.staticfiles",
 ]
 
 TEMPLATES = [
@@ -50,7 +50,6 @@ TEMPLATES = [
     },
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 
 """MIDDLEWARE.
@@ -63,7 +62,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    # "django.contrib.messages.middleware.MessageMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -128,7 +127,10 @@ CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
 REST_FRAMEWORK = {
     # "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     # "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
-    "DEFAULT_PERMISSION_CLASSES": ["accounts.permissions.AllowAll"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "accounts.authentication.Authentication"
+    ],
+    "DEFAULT_PERMISSION_CLASSES": ["accounts.permissions.IsAuthenticated"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_PAGINATION_CLASS": "accounts.pagination.Pagination",
     "DEFAULT_FILTER_BACKENDS": [

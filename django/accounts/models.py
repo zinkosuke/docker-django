@@ -80,8 +80,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @staticmethod
     def url_decode(uid):
-        pk = int(force_text(urlsafe_base64_decode(uid)))
-        return User._default_manager.get(pk=pk)
+        try:
+            pk = int(force_text(urlsafe_base64_decode(uid)))
+            return User._default_manager.get(pk=pk)
+        except Exception:
+            return None
 
     def tokenize(self):
         return default_token_generator.make_token(self)

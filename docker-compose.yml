@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 x-refs:
 services:
   django:
@@ -9,7 +9,7 @@ services:
       DJANGO_SETTINGS_MODULE: settings.env.dev
       AWS_PROFILE: ${AWS_PROFILE}
     ports:
-      - "8000:8000"
+      - 8000:8000
     volumes:
       - ${HOME}/.aws:/home/django/.aws
       - ./django:/opt/django
@@ -22,9 +22,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: django_db
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      POSTGRES_INITDB_ARGS: --encoding=UTF-8
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - pg-data:/var/lib/postgresql
 networks:
