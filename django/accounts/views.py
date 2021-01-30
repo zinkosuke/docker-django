@@ -15,7 +15,6 @@ from . import serializers
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
     queryset = models.User.objects.all().order_by("pk")
     filterset_class = filters.UserFilterSet
 
@@ -26,6 +25,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class LoginView(ObtainAuthToken):
+    permission_classes = [permissions.AllowAll]
+
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
@@ -43,7 +44,6 @@ class LoginView(ObtainAuthToken):
 
 
 class LogoutView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated]
     def post(self, request, *args, **kwargs):
         if request.user and request.user.is_authenticated:
             Token.objects.filter(user=request.user).delete()
@@ -51,7 +51,6 @@ class LogoutView(views.APIView):
 
 
 class PasswordChangeView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = serializers.PasswordChangeSerializer
 
     def post(self, request, *args, **kwargs):
@@ -62,6 +61,7 @@ class PasswordChangeView(generics.GenericAPIView):
 
 
 class PasswordForgetView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAll]
     serializer_class = serializers.EmailSerializer
 
     def get_users(self, email_value):
@@ -85,6 +85,7 @@ class PasswordForgetView(generics.GenericAPIView):
 
 
 class PasswordResetView(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAll]
     serializer_class = serializers.PasswordResetSerializer
 
     def post(self, request, *args, **kwargs):
