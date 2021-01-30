@@ -33,15 +33,19 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class EmailSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(write_only=True)
 
     def save(self):
         return self.validated_data["email"]
 
 
 class NewPasswordSerializer(serializers.Serializer):
-    new_password1 = serializers.CharField(max_length=128, required=True)
-    new_password2 = serializers.CharField(max_length=128, required=True)
+    new_password1 = serializers.CharField(
+        max_length=128, required=True, write_only=True
+    )
+    new_password2 = serializers.CharField(
+        max_length=128, required=True, write_only=True
+    )
 
     def __init__(self, *args, **kwargs):
         self.user_cache = kwargs.pop("user", None)
@@ -64,7 +68,9 @@ class NewPasswordSerializer(serializers.Serializer):
 
 
 class PasswordChangeSerializer(NewPasswordSerializer):
-    old_password = serializers.CharField(max_length=128, required=True)
+    old_password = serializers.CharField(
+        max_length=128, required=True, write_only=True
+    )
 
     def validate_old_password(self, value):
         if not self.user_cache.check_password(value):
@@ -77,8 +83,8 @@ class PasswordChangeSerializer(NewPasswordSerializer):
 
 
 class PasswordResetSerializer(NewPasswordSerializer):
-    uid = serializers.CharField(required=True)
-    token = serializers.CharField(required=True)
+    uid = serializers.CharField(required=True, write_only=True)
+    token = serializers.CharField(required=True, write_only=True)
 
     def validate(self, attrs):
         self.user_cache = models.User.url_decode(attrs.get("uid"))

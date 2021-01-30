@@ -1,4 +1,3 @@
-from rest_framework import generics
 from rest_framework import views
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
@@ -50,19 +49,18 @@ class LogoutView(views.APIView):
         return Response({}, status=204)
 
 
-class PasswordChangeView(generics.GenericAPIView):
-    serializer_class = serializers.PasswordChangeSerializer
-
+class PasswordChangeView(views.APIView):
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, user=request.user)
+        serializer = serializers.PasswordChangeSerializer(
+            data=request.data, user=request.user
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({}, status=204)
 
 
-class PasswordForgetView(generics.GenericAPIView):
+class PasswordForgetView(views.APIView):
     permission_classes = [permissions.AllowAll]
-    serializer_class = serializers.EmailSerializer
 
     def get_users(self, email_value):
         users = []
@@ -76,7 +74,7 @@ class PasswordForgetView(generics.GenericAPIView):
         return users
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = serializers.EmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email_value = serializer.save()
         for user in self.get_users(email_value):
@@ -84,12 +82,11 @@ class PasswordForgetView(generics.GenericAPIView):
         return Response({}, status=204)
 
 
-class PasswordResetView(generics.GenericAPIView):
+class PasswordResetView(views.APIView):
     permission_classes = [permissions.AllowAll]
-    serializer_class = serializers.PasswordResetSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = serializers.PasswordResetSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({}, status=204)
