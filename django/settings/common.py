@@ -130,7 +130,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "accounts.authentication.Authentication"
     ],
-    "DEFAULT_PERMISSION_CLASSES": ["accounts.permissions.IsAuthenticated"],
+    "DEFAULT_PERMISSION_CLASSES": ["accounts.permissions.AllowAll"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_PAGINATION_CLASS": "accounts.pagination.Pagination",
     "DEFAULT_FILTER_BACKENDS": [

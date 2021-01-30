@@ -15,16 +15,16 @@ urlpatterns = [
     path(
         "password_change/",
         views.PasswordChangeView.as_view(),
-        name="password_change",
+        name="password-change",
     ),
     path(
         "password_forget/",
         views.PasswordForgetView.as_view(),
-        name="password_forget",
+        name="password-forget",
     ),
     path(
         "password_reset/",
         views.PasswordResetView.as_view(),
-        name="password_reset",
+        name="password-reset",
     ),
 ] + router.urls

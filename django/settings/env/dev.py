@@ -21,10 +21,6 @@ DATABASES = {
 
 SECRET_KEY = "506445en4m34=iz$+hi#3v+h+a^z&t!v@#q)@2gum67!*9176v"
 
-"""SESSIONS.
-"""
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-
 """CORS.
 """
 FRONTEND_HOST = "localhost:3000"
