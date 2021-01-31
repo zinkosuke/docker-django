@@ -91,7 +91,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/UserReadOnly'
+                      $ref: '#/components/schemas/UserRead'
           description: ''
       tags:
       - v1
@@ -103,19 +103,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserReadOnly'
+              $ref: '#/components/schemas/UserCreate'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserReadOnly'
+              $ref: '#/components/schemas/UserCreate'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserReadOnly'
+              $ref: '#/components/schemas/UserCreate'
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserReadOnly'
+                $ref: '#/components/schemas/UserCreate'
           description: ''
       tags:
       - v1
@@ -183,7 +183,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserReadOnly'
+                $ref: '#/components/schemas/UserRead'
           description: ''
       tags:
       - v1
@@ -460,45 +460,37 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PasswordChange'
+            schema: {}
           application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordChange'
+            schema: {}
           multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordChange'
+            schema: {}
       responses:
         '201':
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/PasswordChange'
+              schema: {}
           description: ''
       tags:
       - v1
   /v1/accounts/password_forget/:
     post:
-      operationId: createEmail
+      operationId: createPasswordForget
       description: ''
       parameters: []
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/Email'
+            schema: {}
           application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Email'
+            schema: {}
           multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Email'
+            schema: {}
       responses:
         '201':
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Email'
+              schema: {}
           description: ''
       tags:
       - v1
@@ -510,26 +502,22 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/PasswordReset'
+            schema: {}
           application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordReset'
+            schema: {}
           multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordReset'
+            schema: {}
       responses:
         '201':
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/PasswordReset'
+              schema: {}
           description: ''
       tags:
       - v1
 components:
   schemas:
-    UserReadOnly:
+    UserRead:
       type: object
       properties:
         id:
@@ -578,48 +566,34 @@ components:
       required:
       - username
       - password
-    PasswordChange:
+    UserCreate:
       type: object
       properties:
-        new_password1:
+        password:
           type: string
           maxLength: 128
-        new_password2:
+        username:
           type: string
-          maxLength: 128
-        old_password:
+          description: "\u3053\u306E\u9805\u76EE\u306F\u5FC5\u9808\u3067\u3059\u3002\
+            \u534A\u89D2\u30A2\u30EB\u30D5\u30A1\u30D9\u30C3\u30C8\u3001\u534A\u89D2\
+            \u6570\u5B57\u3001@/./+/-/_ \u3067150\u6587\u5B57\u4EE5\u4E0B\u306B\u3057\
+            \u3066\u304F\u3060\u3055\u3044\u3002"
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        first_name:
           type: string
-          maxLength: 128
-      required:
-      - new_password1
-      - new_password2
-      - old_password
-    Email:
-      type: object
-      properties:
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
         email:
           type: string
           format: email
+          maxLength: 254
       required:
+      - password
+      - username
       - email
-    PasswordReset:
-      type: object
-      properties:
-        new_password1:
-          type: string
-          maxLength: 128
-        new_password2:
-          type: string
-          maxLength: 128
-        uid:
-          type: string
-        token:
-          type: string
-      required:
-      - new_password1
-      - new_password2
-      - uid
-      - token
     UserUpdate:
       type: object
       properties:

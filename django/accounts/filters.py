@@ -11,4 +11,4 @@ class UserFilterSet(filters.FilterSet):
 
     class Meta:
         model = models.User
-        fields = serializers.UserReadOnlySerializer.Meta.fields
+        fields = serializers.UserReadSerializer.Meta.fields

@@ -37,7 +37,7 @@ def get_sites_context(request=None):
     }
 
 
-def password_reset_email(request, user):
+def user_create(request, user):
     ctx = get_sites_context(request)
     ctx.update(
         {
@@ -47,8 +47,26 @@ def password_reset_email(request, user):
         }
     )
     send_mail(
-        f"{app_name}/password_reset_email/subject.txt",
-        f"{app_name}/password_reset_email/body.txt",
+        f"{app_name}/user_create/subject.txt",
+        f"{app_name}/user_create/body.txt",
+        ctx,
+        None,
+        user.email,
+    )
+
+
+def password_forget(request, user):
+    ctx = get_sites_context(request)
+    ctx.update(
+        {
+            "user": user,
+            "uid": user.url_encode(),
+            "token": user.tokenize(),
+        }
+    )
+    send_mail(
+        f"{app_name}/password_forget/subject.txt",
+        f"{app_name}/password_forget/body.txt",
         ctx,
         None,
         user.email,

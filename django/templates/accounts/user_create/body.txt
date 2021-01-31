@@ -1,0 +1,3 @@
+user_create
+user: {{ user }}
+'{"uid": "{{ uid }}", "token": "{{ token }}"}'

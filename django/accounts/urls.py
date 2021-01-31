@@ -8,7 +8,7 @@ from .apps import app_name  # NOQA: F401
 router = routers.SimpleRouter()
 router.register(r"users", views.UserViewSet)
 
-# TODO UserRegister, EmailChange, EmailVerification
+# TODO UserActivate, EmailChange, EmailVerification
 urlpatterns = [
     path("login/", views.LoginView.as_view(), name="login"),
     path("logout/", views.LogoutView.as_view(), name="logout"),

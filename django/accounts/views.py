@@ -4,9 +4,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 
-from django.contrib.auth.forms import _unicode_ci_compare
-
-from . import email
 from . import filters
 from . import models
 from . import permissions
@@ -17,10 +14,24 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all().order_by("pk")
     filterset_class = filters.UserFilterSet
 
+    def get_permissions(self):
+        if self.action == "create":
+            return [permissions.AllowAll()]
+        return [permissions.IsAuthenticated()]
+
     def get_serializer_class(self):
+        if self.action == "create":
+            return serializers.UserCreateSerializer
         if self.action in {"update", "partial_update"}:
             return serializers.UserUpdateSerializer
-        return serializers.UserReadOnlySerializer
+        return serializers.UserReadSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        serializer = serializers.UserReadSerializer(instance=instance)
+        return Response(serializer.data, status=201)
 
 
 class LoginView(ObtainAuthToken):
@@ -62,23 +73,12 @@ class PasswordChangeView(views.APIView):
 class PasswordForgetView(views.APIView):
     permission_classes = [permissions.AllowAll]
 
-    def get_users(self, email_value):
-        users = []
-        for user in models.User.objects.filter(
-            email__iexact=email_value, is_active=True
-        ):
-            if user.has_usable_password() and _unicode_ci_compare(
-                email_value, user.email
-            ):
-                users.append(user)
-        return users
-
     def post(self, request, *args, **kwargs):
-        serializer = serializers.EmailSerializer(data=request.data)
+        serializer = serializers.PasswordForgetSerializer(
+            request, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
-        email_value = serializer.save()
-        for user in self.get_users(email_value):
-            email.password_reset_email(request, user)
+        serializer.save()
         return Response({}, status=204)
 
 
