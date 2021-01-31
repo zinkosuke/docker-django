@@ -87,3 +87,6 @@ msgstr ""
 #: settings/common.py:25
 msgid "Japanese"
 msgstr ""
+
+msgid "This token is expired."
+msgstr "期限切れのトークンです。"

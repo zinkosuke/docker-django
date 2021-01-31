@@ -60,6 +60,17 @@ class LogoutView(views.APIView):
         return Response({}, status=204)
 
 
+class ActivateView(views.APIView):
+    permission_classes = [permissions.AllowAll]
+
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.ActivateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        serializer = serializers.UserReadSerializer(instance=instance)
+        return Response(serializer.data, status=200)
+
+
 class PasswordChangeView(views.APIView):
     def post(self, request, *args, **kwargs):
         serializer = serializers.PasswordChangeSerializer(

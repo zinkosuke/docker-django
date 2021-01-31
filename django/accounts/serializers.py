@@ -90,6 +90,25 @@ class BaseNewPasswordSerializer(serializers.Serializer):
         return self.user_cache
 
 
+class ActivateSerializer(serializers.Serializer):
+    uid = serializers.CharField(required=True, write_only=True)
+    token = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        self.user_cache = models.User.url_decode(attrs.get("uid"))
+        if self.user_cache is None:
+            raise ValidationError(_("This account is inactive."))
+        if not self.user_cache.compare_token(attrs.get("token")):
+            raise ValidationError(_("This token is expired."))
+        attrs = super().validate(attrs)
+        return attrs
+
+    def save(self):
+        self.user_cache.is_active = True
+        self.user_cache.save()
+        return self.user_cache
+
+
 class PasswordChangeSerializer(BaseNewPasswordSerializer):
     old_password = serializers.CharField(
         max_length=128, required=True, write_only=True
@@ -132,6 +151,6 @@ class PasswordResetSerializer(BaseNewPasswordSerializer):
         if self.user_cache is None:
             raise ValidationError(_("This account is inactive."))
         if not self.user_cache.compare_token(attrs.get("token")):
-            raise ValidationError(_("This account is inactive."))
+            raise ValidationError(_("This token is expired."))
         attrs = super().validate(attrs)
         return attrs
